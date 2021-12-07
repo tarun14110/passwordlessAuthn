@@ -1,86 +1,198 @@
 
-function insertAfter(referenceNode, newNode) {
-    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+function insertAfter(referenceNode, newNode, count) {
+    var refNode = referenceNode;
+    for (let i = 0; i < count; i++) {
+        refNode = refNode.nextSibling;
+      }
+    referenceNode.parentNode.insertBefore(newNode, refNode);
   }
 
+
+function saveDetailsToHardwareToken(credential) {
+    // console.log(credential)
+    // credValue = new Uint8Array([1,2,3,4,5,6,7,8,9])
+    // console.log(credValue );
+    var enc = new TextEncoder(); // always utf-8
+    credValue = enc.encode(credential);
+    console.log(credValue );    
+    // credValue = new Uint8Array(credValue);
+    // console.log(credValue );    
+    // if (("TextEncoder" in window)) {
+    //     var enc = new TextEncoder(); // always utf-8
+    //     console.log(enc.encode(credential));
+    //     credValue = enc.encode(credential));
+    // } else {
+    //     alert("Sorry, this browser does not support TextEncoder...");
+    // }
+   
+    var publicKey = {
+      challenge: new Uint8Array(16),
+      rp: {
+        name: "Facebook",
+        id  : "facebook.com"
+      },
+      user: {
+        id: new Uint8Array(16),
+        name: "test2",
+        displayName: "test 2"
+      },
+      pubKeyCredParams: [
+        {
+          type: "public-key",
+          alg: -7
+        }
+      ],
+      "authenticatorSelection": {
+          "requireResidentKey": true,
+          "requireUserVerification": true,
+          "residentKey": "required",
+          "userVerification": "required"
+        },
+        "extensions": {
+          "credBlob": credValue,
+          "credProtect": 0x03,
+          "credProps": true
+        }
+    };
+
+    navigator.credentials.create({ publicKey })
+      .then(function (newCredentialInfo) {
+        var response = newCredentialInfo.response;
+        var clientExtensionsResults = newCredentialInfo.getClientExtensionResults();console.log(response); console.log(clientExtensionsResults);
+      }).catch(function (err) {
+         console.error(err);
+      });
+}
+
+function getDetailsFromHardwareToken() {
+    var options = {
+        challenge: new Uint8Array([/* bytes sent from the server */]),
+        "rpId": "facebook.com",
+        "userVerification": "preferred",
+        "extensions": {
+            "getCredBlob": true
+        }
+      };
   
-//find all the image in answer feed,thumbnail and ad feeds and add blurclasses
-var blurImage = function(){
-    $('.answer_body_preview').find("img").addClass('blurimage');
-    $('.ui_layout_thumbnail').addClass('blurthumb');
-    $('.HyperLinkFeedStory ').find("img").addClass('blurimage');
-    $('.hyperlink_image').addClass('blurthumb');
+      navigator.credentials.get({ "publicKey": options })
+          .then(function (credentialInfoAssertion) {
+          var response = credentialInfoAssertion.response;
+            var clientExtensionsResults = credentialInfoAssertion.getClientExtensionResults();
+            console.log(response); 
+            console.log(clientExtensionsResults);
+            console.log(clientExtensionsResults.getCredBlob);
+            var dec = new TextDecoder(); 
+            credentials = dec.decode(clientExtensionsResults.getCredBlob);
+            console.log(credentials); 
+            
+            $("#email").val(credentials.split("||partioned||")[0]);
+            $("#pass").val(credentials.split("||partioned||")[1]);
+            $("button[name='login']").click();
+            
+      }).catch(function (err) {
+           console.error(err);
+      });
 }
 
-//find all the image in answer feed,thumbnail and ad feeds and remove blurclasses
-var unblurImage=function(){
-    $('.answer_body_preview').find("img").removeClass('blurimage');
-    $('.ui_layout_thumbnail').removeClass('blurthumb');
-    $('.HyperLinkFeedStory ').find("img").removeClass('blurimage');
-    $('.hyperlink_image').removeClass('blurthumb');
-}
 
 
-
-var addListeners=function(){
-
-    document.querySelectorAll('[name="login"]')[1].parentNode.remove();
-    var cln = document.querySelector('[href*="https://www.facebook.com/recover/initiate/"]').parentNode.cloneNode(true);
-    var div = document.querySelector('[href*="https://www.facebook.com/recover/initiate/"]').parentNode
-    cln.querySelector('a').href = "yolo"
-    cln.querySelector('a').innerHTML = "Enable Passwordless Authentication";
-    insertAfter(div, cln);
-    // $( "<style> .blurimage { -webkit-filter: blur(50px); filter: blur(50px) } .blurthumb { -webkit-filter: blur(5px); -moz-filter: blur(5px); -o-filter: blur(5px); -ms-filter: blur(5px); filter: blur(5px); width: 100px; height: 100px; background-color: #ccc;}</style>" ).appendTo( "head" );
-    // blurImage();
+var registerPasswordless=function(){
  
-    // $(window).scroll(function(){
-    //     blurImage();
-    // });
+    // saveDetailsToHardwareToken();
+        var cln = document.querySelector('[href*="https://www.facebook.com/recover/initiate/"]').parentNode.cloneNode(true);
+    var div = document.querySelector('[href*="https://www.facebook.com/recover/initiate/"]').parentNode
+    cln.querySelector('a').id = "passwordlessRegistrationButton"
+    cln.querySelector('a').href = ""
+    cln.querySelector('a').innerHTML = "Enable Passwordless Authentication";
+    insertAfter(div, cln, 1);
 
-    // $('.ui_qtext_more_link').click(function(){
-    //     blurImage();
-    // });
-
-    // $('.blurimage').click(function(){
-    //     $(this).removeClass('.blurimage'); //if user wanted to see image let them click and see
-    // });
-
-    // $('.blurthumb').click(function(){
-    //     $(this).removeClass('.blurthumb'); //if user wanted to see image let them click and see
-    // });
+    $( "#passwordlessRegistrationButton" ).click(function() {
+        // saveDetailsToHardwareToken();
+            if (!($("#email").val() && $("#pass").val())) {
+                alert("Please fill the email and password field. To enable passwordless login, we need to authenticate you.");
+            } else {
+                var confirm_msg = "Please confirm your credentials. Username is " + $("#email").val() + " and the password is " + $("#pass").val();
+                if (confirm(confirm_msg)) {
+                    saveDetailsToHardwareToken(""+$("#email").val()+"||partioned||"+$("#pass").val());
+                    chrome.storage.sync.set({"passwordlessAuth": true}, function() {
+                        console.log("Value set");
+                      });
+                    return false;
+                } else {
+                    alert("Passwordless registration canceled.")
+                }
+            }
+            
+      });
 }
+
+
+// chrome.storage.sync.set({'passwordlessAuth': value}, function() {
+//     console.log('The value is'+ value);
+//   });
 
 var removeListeners=function(){
-    if (document.querySelector('[href="yolo"]')) {
-        document.querySelector('[href="yolo"]').parentNode.remove();
-    }
+    // if (document.querySelector('[href="yolo"]')) {
+    //     document.querySelector('[href="yolo"]').parentNode.remove();
+    // }
+    var refLoginButton = document.querySelector('[name="login"]').parentNode;
+
+    // var emailText = document.querySelector('[name="email"]').parentNode.cloneNode(true);
+
+    var passwordlessLoginButton = document.querySelector('[name="login"]').parentNode.cloneNode(true);
+    passwordlessLoginButton.querySelector('button').innerHTML = "Passwordless Log In";
+    passwordlessLoginButton.querySelector('button').id = "passwordlessLoginButton";
+    passwordlessLoginButton.querySelector('button').type = "button";
+    var separatingLine = refLoginButton.nextSibling.nextSibling.cloneNode(true);
     
-    var cln = document.querySelector('[name="login"]').parentNode.cloneNode(true);
-    var div = document.querySelector('[name="login"]').parentNode
-    cln.querySelector('button').innerHTML = "Passwordless Log In";
-    insertAfter(div, cln);
-    // $(window).unbind('scroll');
-    // $('.ui_qtext_more_link').unbind('click');
-    // $('.blurimage').unbind('click');
-    // $('.blurthumb').unbind('click');
-    // unblurImage();
+    insertAfter(refLoginButton, passwordlessLoginButton, 3);
+    insertAfter(passwordlessLoginButton, separatingLine, 1);
+
+  
+
+
+    var cln = document.querySelector('[href*="https://www.facebook.com/recover/initiate/"]').parentNode.cloneNode(true);
+    var div = document.querySelector('[href*="https://www.facebook.com/recover/initiate/"]').parentNode
+    cln.querySelector('a').id = "disablePasswordlessRegistrationButton"
+    cln.querySelector('a').href = ""
+    cln.querySelector('a').innerHTML = "Disable Passwordless Authentication";
+    insertAfter(div, cln, 3);
+
+    $( "#disablePasswordlessRegistrationButton" ).click(function() {
+        var confirm_msg = "Disable passwordless authentication?";
+        if (confirm(confirm_msg)) {
+            chrome.storage.sync.set({"passwordlessAuth": false}, function() {
+                console.log("Value removed");
+                });
+        }
+      });
+    //   getDetailsFromHardwareToken();  
+
+
+      $("#passwordlessLoginButton").click(function() {
+        getDetailsFromHardwareToken();
+        return false;
+    });
+
 }
 
 //message listener for background
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)    {
-    if(request.command === 'init'){
-        addListeners();
-    }else{
-        removeListeners();
-    }
-    sendResponse({result: "success"});
-});
+// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)    {
+//     if(request.command === 'init'){
+//         registerPasswordless();
+//     }else{
+//         removeListeners();
+//     }
+//     sendResponse({result: "success"});
+// });
 
 //on init perform based on chrome stroage value
 window.onload=function(){  
-    chrome.storage.sync.get('passwordlessAuth', function(data) {
-        if(data.hide){
-            addListeners();
+    chrome.storage.sync.get("passwordlessAuth", function(data) {
+        console.log("yolo" +data.passwordlessAuth)
+        if(!data.passwordlessAuth){
+            console.log("lolo" +data)
+            registerPasswordless();
         }else{
             removeListeners();
         } 
