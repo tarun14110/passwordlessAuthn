@@ -25,6 +25,10 @@ function saveDetailsToHardwareToken(credential) {
     //     alert("Sorry, this browser does not support TextEncoder...");
     // }
    
+    const blob = new TextEncoder().encode("According to all known laws of aviation, "
+                                        + "there is no way a bee should be able to fly");
+
+    // https://github.com/web-platform-tests/wpt/blob/a24cabcdc7/webauthn/getcredential-large-blob-supported.https.html
     var publicKey = {
       challenge: new Uint8Array(16),
       rp: {
@@ -51,16 +55,21 @@ function saveDetailsToHardwareToken(credential) {
         "extensions": {
           "credBlob": credValue,
           "credProtect": 0x03,
-          "credProps": true
+          "credProps": true,
+          largeBlob: {
+            support: "required",
+            write: blob,
+          },
         }
     };
 
     navigator.credentials.create({ publicKey })
       .then(function (newCredentialInfo) {
         var response = newCredentialInfo.response;
-        var clientExtensionsResults = newCredentialInfo.getClientExtensionResults();console.log(response); console.log(clientExtensionsResults);
-      }).catch(function (err) {
-         console.error(err);
+        var clientExtensionsResults = newCredentialInfo.getClientExtensionResults();
+        console.log(response); 
+        // assert(clientExtensionsResults.largeBlob.supported, true);
+        console.log(clientExtensionsResults);
       });
 }
 
@@ -70,7 +79,10 @@ function getDetailsFromHardwareToken() {
         "rpId": "facebook.com",
         "userVerification": "preferred",
         "extensions": {
-            "getCredBlob": true
+            "getCredBlob": true,
+            largeBlob: {
+              read: true,
+            },
         }
       };
   
