@@ -1,8 +1,14 @@
-export class Facebook {
+function insertAfter(referenceNode, newNode, count) {
+    var refNode = referenceNode;
+    for (let i = 0; i < count; i++) {
+        refNode = refNode.nextSibling;
+    }
+    referenceNode.parentNode.insertBefore(newNode, refNode);
+}
 
+class Facebook {
 
     static registerFacebook = function () {
-        debugger;
         var cln = document.querySelector('[href*="https://www.facebook.com/recover/initiate/"]').parentNode.cloneNode(true);
         var div = document.querySelector('[href*="https://www.facebook.com/recover/initiate/"]').parentNode
         cln.querySelector('a').id = "passwordlessRegistrationButton"
@@ -32,7 +38,6 @@ export class Facebook {
     static removeFacebookListeners = function () {
         var refLoginButton = document.querySelector('[name="login"]').parentNode;
 
-
         var passwordlessLoginButton = document.querySelector('[name="login"]').parentNode.cloneNode(true);
         passwordlessLoginButton.querySelector('button').innerHTML = "Passwordless Log In";
         passwordlessLoginButton.querySelector('button').id = "passwordlessLoginButton";
@@ -58,7 +63,6 @@ export class Facebook {
                 });
             }
         });
-
 
         $("#passwordlessLoginButton").click(function () {
             getDetailsFromHardwareToken();

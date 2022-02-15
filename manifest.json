@@ -26,7 +26,9 @@
       ],
       "js": [
         "Chrome_Dependencies/jquery-3.3.1.js",
-        "content.js"
+        "content.js",
+        "Paswordless_WebPages/Facebook/facebook_content.js",
+        "Hardware_Token/token_data.js"
       ]
     }
   ],
