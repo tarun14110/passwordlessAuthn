@@ -15,6 +15,15 @@ window.onload = () => {
                 }
             });
             break;
+        case "amazon":
+            chrome.storage.sync.get("passwordlessAuth.amazon", (data) => {
+                if (!data["passwordlessAuth.amazon"]) {
+                    console.log(("PWLA is not yet registered for amazon: " + JSON.stringify(data, null, 2)))
+                    Amazon.registerAmazon();
+                } else {
+                    Amazon.removeAmazonListeners();
+                }
+            })
         default:
             console.log(hostName + " is not available for Passwordless Authentication");
     }
