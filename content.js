@@ -8,7 +8,7 @@ window.onload = () => {
         case "facebook":
             chrome.storage.sync.get("passwordlessAuth.facebook", (data) => {
                 if (!data["passwordlessAuth.facebook"]) {
-                    console.log("PWLA is not yet registered for facebook: " + JSON.stringify(data, null, 2))
+                    console.log("PWLA is not yet registered for " + Hosts.facebook + ": " + JSON.stringify(data, null, 2))
                     Facebook.registerFacebook();
                 } else {
                     Facebook.removeFacebookListeners();
@@ -16,14 +16,15 @@ window.onload = () => {
             });
             break;
         case "amazon":
-            chrome.storage.sync.get("passwordlessAuth.amazon", (data) => {
-                if (!data["passwordlessAuth.amazon"]) {
-                    console.log(("PWLA is not yet registered for amazon: " + JSON.stringify(data, null, 2)))
+            chrome.storage.sync.get(Host_Keys.amazon, (data) => {
+                if (!data[Host_Keys.amazon]) {
+                    console.log(("PWLA is not yet registered for " + Hosts.amazon + ": " + JSON.stringify(data, null, 2)))
                     Amazon.registerAmazon();
                 } else {
                     Amazon.removeAmazonListeners();
                 }
-            })
+            });
+            break;
         default:
             console.log(hostName + " is not available for Passwordless Authentication");
     }

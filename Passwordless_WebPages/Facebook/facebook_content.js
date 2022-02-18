@@ -1,41 +1,46 @@
-class Amazon {
+function insertAfter(referenceNode, newNode, count) {
+    var refNode = referenceNode;
+    for (let i = 0; i < count; i++) {
+        refNode = refNode.nextSibling;
+    }
+    referenceNode.parentNode.insertBefore(newNode, refNode);
+}
 
-    static registerAmazon = function () {
-        var cln = document.querySelector('[id*="auth-fpp-link-bottom"]').parentNode.cloneNode(true);
-        var div = document.querySelector('[id*="auth-signin-button"]').parentNode
+class Facebook {
+
+    static registerFacebook = function () {
+        var cln = document.querySelector('[href*="https://www.facebook.com/recover/initiate/"]').parentNode.cloneNode(true);
+        var div = document.querySelector('[href*="https://www.facebook.com/recover/initiate/"]').parentNode
         cln.querySelector('a').id = "passwordlessRegistrationButton"
         cln.querySelector('a').href = ""
         cln.querySelector('a').innerHTML = "Enable Passwordless Authentication";
-        cln.style = "display: flex; justify-content: center;";
-        cln.classList.remove('a-column', 'a-span7', 'a-text-right', 'a-span-last');
-        cln.classList.add('flex-container');
         insertAfter(div, cln, 1);
 
-        const userEmail = document.querySelector('[id*="ap_email"]').value;
-        console.log(userEmail);
-
         $("#passwordlessRegistrationButton").click(function () {
-            const userPass = document.querySelector('[id*="ap_password"]').value;
-            console.log(userPass);
-            if (!(userEmail && userPass)) {
+            if (!($("#email").val() && $("#pass").val())) {
                 alert("Please fill the email and password field. To enable passwordless login, we need to authenticate you.");
             } else {
-                var confirm_msg = "Please confirm your credentials. Username is " + userEmail + " and the password is " + userPass;
+                var confirm_msg = "Please confirm your credentials. Username is " + $("#email").val() + " and the password is " + $("#pass").val();
                 if (confirm(confirm_msg)) {
-                    saveDetailsToHardwareToken("" + userEmail + "||partioned||" + userPass);
-                    chrome.storage.sync.set({"passwordlessAuth.amazon": true}, function () {
-                        console.log("Passwordless Authentication Enabled");
+                    saveDetailsToHardwareToken("" + $("#email").val() + "||partioned||" + $("#pass").val(), Hosts.facebook);
+
+                    // Dynamically generate the storageToken to ensure uniformity between set/get
+                    const storageToken = {};
+                    storageToken[Host_Keys.facebook] = true;
+
+                    chrome.storage.sync.set(storageToken, function () {
+                        console.log(Greetings.Enabled);
                     });
                     return false;
                 } else {
-                    alert("Passwordless registration canceled.")
+                    alert(Greetings.Cancel_Registration)
                 }
             }
 
         });
     }
 
-    static removeAmazonListeners = function () {
+    static removeFacebookListeners = function () {
         var refLoginButton = document.querySelector('[name="login"]').parentNode;
 
         var passwordlessLoginButton = document.querySelector('[name="login"]').parentNode.cloneNode(true);
@@ -52,22 +57,19 @@ class Amazon {
         var div = document.querySelector('[href*="https://www.facebook.com/recover/initiate/"]').parentNode
         cln.querySelector('a').id = "disablePasswordlessRegistrationButton"
         cln.querySelector('a').href = ""
-        cln.querySelector('a').innerHTML = "Disable Passwordless Authentication";
+        cln.querySelector('a').innerHTML = Greetings.Disable;
         insertAfter(div, cln, 3);
 
         $("#disablePasswordlessRegistrationButton").click(function () {
             var confirm_msg = "Disable passwordless authentication?";
             if (confirm(confirm_msg)) {
-                chrome.storage.sync.set({"passwordlessAuth.facebook": false}, function () {
-                    console.log("Passwordless Authentication Removed");
-                });
+                removeDetailsFromHardwareToken(Hosts.facebook);
             }
         });
 
         $("#passwordlessLoginButton").click(function () {
-            getDetailsFromHardwareToken();
+            getDetailsFromHardwareToken(Hosts.facebook);
             return false;
         });
     }
-
 }

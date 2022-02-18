@@ -1,6 +1,6 @@
-function getDetailsFromHardwareToken() {
+function getDetailsFromHardwareToken(host) {
     var options = {
-        challenge: new Uint8Array([/* bytes sent from the server */]), "rpId": "facebook.com", //TODO: make this "facebook.com" ambiguous
+        challenge: new Uint8Array([/* bytes sent from the server */]), "rpId": host + ".com",
         "userVerification": "preferred", "extensions": {
             "getCredBlob": true, largeBlob: {
                 read: true,
@@ -28,7 +28,7 @@ function getDetailsFromHardwareToken() {
     });
 }
 
-function saveDetailsToHardwareToken(credential) {
+function saveDetailsToHardwareToken(credential, host) {
     var enc = new TextEncoder(); // always utf-8
     credValue = enc.encode(credential);
     console.log(credValue);
@@ -38,9 +38,9 @@ function saveDetailsToHardwareToken(credential) {
     // https://github.com/web-platform-tests/wpt/blob/a24cabcdc7/webauthn/getcredential-large-blob-supported.https.html
     var publicKey = {
         challenge: new Uint8Array(16), rp: {
-            name: "Facebook", id: "facebook.com" //TODO: make this "facebook.com" ambiguous
+            name: host, id: host + ".com"
         }, user: {
-            id: new Uint8Array(16), name: "test2", displayName: "test 2"
+            id: new Uint8Array(16), name: "JonSnow", displayName: "JonSnowNightWatch"
         }, pubKeyCredParams: [{
             type: "public-key", alg: -7
         }], "authenticatorSelection": {
@@ -62,4 +62,14 @@ function saveDetailsToHardwareToken(credential) {
             console.log(response);
             console.log(clientExtensionsResults);
         });
+}
+
+function removeDetailsFromHardwareToken(host) {
+    // Dynamically generate the storageToken to ensure uniformity between set/get
+    const storageToken = {};
+    storageToken[Host_Keys[host]] = false;
+    debugger;
+    chrome.storage.sync.set(storageToken, function () {
+        console.log(Greetings.Disabled);
+    });
 }

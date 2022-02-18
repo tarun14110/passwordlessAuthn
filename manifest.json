@@ -27,9 +27,11 @@
       "js": [
         "Chrome_Dependencies/jquery-3.3.1.js",
         "content.js",
-        "Paswordless_WebPages/Facebook/facebook_content.js",
-        "Paswordless_WebPages/Amazon/amazon_content.js",
-        "Hardware_Token/token_data.js"
+        "Passwordless_WebPages/Facebook/facebook_content.js",
+        "Passwordless_WebPages/Amazon/amazon_content.js",
+        "Hardware_Token/token_data.js",
+        "Passwordless_WebPages/Enums/host_names.js",
+        "Passwordless_WebPages/Enums/greetings.js"
       ]
     }
   ],
