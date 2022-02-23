@@ -6,8 +6,8 @@ window.onload = () => {
 
     switch (hostName) {
         case "facebook":
-            chrome.storage.sync.get("passwordlessAuth.facebook", (data) => {
-                if (!data["passwordlessAuth.facebook"]) {
+            chrome.storage.sync.get(Host_Keys.facebook, (data) => {
+                if (!data[Host_Keys.facebook]) {
                     console.log("PWLA is not yet registered for " + Hosts.facebook + ": " + JSON.stringify(data, null, 2))
                     Facebook.registerFacebook();
                 } else {
