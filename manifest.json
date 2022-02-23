@@ -1,37 +1,53 @@
 {
-    "manifest_version": 2,
-    "name": "passwordlessAuthn",
-    "description": "Passwordless Authentication",
-    "version": "1",
-    "author": "ISRL",
-    "background": {
-      "scripts": ["background.js"],
-      "persistent": false
-    },
-    "page_action": {
-      "default_popup": "index.html",
-      "default_icon": {
-        "16": "images/get_started16.png",
-        "32": "images/get_started32.png",
-        "48": "images/get_started48.png",
-        "128": "images/get_started128.png"
-      }
-    },
-    "content_scripts": [
-      {
-        "matches": ["<all_urls>"],
-        "js": ["jquery-3.3.1.js","content.js"]
-      }
+  "manifest_version": 2,
+  "name": "passwordlessAuthn",
+  "description": "Passwordless Authentication",
+  "version": "1",
+  "author": "ISRL",
+  "background": {
+    "scripts": [
+      "background.js"
     ],
-    "icons": {
-      "16": "images/get_started16.png",
-      "32": "images/get_started32.png",
-      "48": "images/get_started48.png",
-      "128": "images/get_started128.png"
-    },
-    "permissions": ["storage","activeTab", "*://*/*"],
-    "page_action": {
-      "default_title": "HideImage",
-      "default_popup": "index.html"
+    "persistent": false
+  },
+  "page_action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "Chrome_Dependencies/images/get_started16.png",
+      "32": "Chrome_Dependencies/images/get_started32.png",
+      "48": "Chrome_Dependencies/images/get_started48.png",
+      "128": "Chrome_Dependencies/images/get_started128.png"
     }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "Chrome_Dependencies/jquery-3.3.1.js",
+        "content.js",
+        "Passwordless_WebPages/Facebook/facebook_content.js",
+        "Passwordless_WebPages/Amazon/amazon_content.js",
+        "Hardware_Token/token_data.js",
+        "Passwordless_WebPages/Enums/host_names.js",
+        "Passwordless_WebPages/Enums/greetings.js"
+      ]
+    }
+  ],
+  "icons": {
+    "16": "Chrome_Dependencies/images/get_started16.png",
+    "32": "Chrome_Dependencies/images/get_started32.png",
+    "48": "Chrome_Dependencies/images/get_started48.png",
+    "128": "Chrome_Dependencies/images/get_started128.png"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "*://*/*"
+  ],
+  "page_action": {
+    "default_title": "HideImage",
+    "default_popup": "index.html"
+  }
 }
