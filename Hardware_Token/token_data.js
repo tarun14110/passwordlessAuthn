@@ -68,7 +68,6 @@ function removeDetailsFromHardwareToken(host) {
     // Dynamically generate the storageToken to ensure uniformity between set/get
     const storageToken = {};
     storageToken[Host_Keys[host]] = false;
-    debugger;
     chrome.storage.sync.set(storageToken, function () {
         console.log(Greetings.Disabled);
     });
