@@ -5,6 +5,16 @@ window.onload = () => {
     const hostName = Helpers.FindHostName();
 
     switch (hostName) {
+        case "amazon":
+            chrome.storage.sync.get(Host_Keys.amazon, (data) => {
+                if (!data[Host_Keys.amazon]) {
+                    console.log(("PWLA is not yet registered for " + Hosts.amazon + ": " + JSON.stringify(data, null, 2)))
+                    Amazon.registerAmazon();
+                } else {
+                    Amazon.removeAmazonListeners();
+                }
+            });
+            break;
         case "facebook":
             chrome.storage.sync.get(Host_Keys.facebook, (data) => {
                 if (!data[Host_Keys.facebook]) {
@@ -15,13 +25,13 @@ window.onload = () => {
                 }
             });
             break;
-        case "amazon":
-            chrome.storage.sync.get(Host_Keys.amazon, (data) => {
-                if (!data[Host_Keys.amazon]) {
-                    console.log(("PWLA is not yet registered for " + Hosts.amazon + ": " + JSON.stringify(data, null, 2)))
-                    Amazon.registerAmazon();
+        case "google":
+            chrome.storage.sync.get(Host_Keys.google, (data) => {
+                if (!data[Host_Keys.google]) {
+                    console.log("PWLA is not yet registered for " + Hosts.google + ": " + JSON.stringify(data, null, 2))
+                    Google.registerGoogle();
                 } else {
-                    Amazon.removeAmazonListeners();
+                    // Facebook.removeFacebookListeners();
                 }
             });
             break;
@@ -37,8 +47,15 @@ window.onload = () => {
 class Helpers {
 
     static FindHostName() {
-        let removeProtocol = (window.location.href).substr(12);
-        return removeProtocol.substring(0, removeProtocol.indexOf('.'));
+        let removeProtocol = (window.location.href).substr(8);
+        removeProtocol = removeProtocol.substring(0, removeProtocol.indexOf('.com'))
+        removeProtocol = removeProtocol.substring(removeProtocol.indexOf('.') + 1, removeProtocol.length)
+
+        // if (removeProtocol.indexOf('.')) {
+        //     removeProtocol = removeProtocol.substring(removeProtocol.indexOf('.') + 1, removeProtocol.length)
+        // }
+
+        return removeProtocol;
     }
 
 }
