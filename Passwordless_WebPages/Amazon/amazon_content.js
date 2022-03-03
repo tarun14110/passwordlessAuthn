@@ -11,33 +11,12 @@ class Amazon {
         cln.innerHTML = Greetings.Enable_Sign_In
         cln.style = "display: flex; justify-content: center;";
         cln.classList.add('flex-container');
-        insertAfter(div, cln, 1);
-
-        const userEmail = document.querySelector('[id*="ap_email"]').value;
+        Utils.insertAfter(div, cln, 1);
 
         $("#passwordlessRegistrationButton").click(function () {
+            const userEmail = document.querySelector('[id*="ap_email"]').value;
             const userPass = document.querySelector('[id*="ap_password"]').value;
-            if (!(userEmail && userPass)) {
-                alert(Greetings.Username_Pass_Warn);
-                return false;
-            } else {
-                var confirm_msg = "Please confirm your credentials. Username is " + userEmail + " and the password is " + userPass;
-                if (confirm(confirm_msg)) {
-                    saveDetailsToHardwareToken("" + userEmail + "||partioned||" + userPass, Hosts.amazon);
-
-                    // Dynamically generate the storageToken to ensure uniformity between set/get
-                    const storageToken = {};
-                    storageToken[Host_Keys.amazon] = true;
-
-                    chrome.storage.sync.set(storageToken, function () {
-                        console.log(Greetings.Enabled);
-                    });
-                    return false;
-                } else {
-                    alert(Greetings.Cancel_Registration)
-                }
-            }
-
+            Utils.register(userEmail, userPass, Hosts.amazon)
         });
     }
 
@@ -69,7 +48,7 @@ class Amazon {
         legalTextRow.parentNode.removeChild(legalTextRow);
 
         // Add the pwlLoginClone button after the original continue button
-        insertAfter(refContinueButton, pwlLoginClone, 1);
+        Utils.insertAfter(refContinueButton, pwlLoginClone, 1);
 
         // Clone the legal text div to get the formatting
         const legalTextClone = legalTextRow.cloneNode(true);
@@ -99,7 +78,5 @@ class Amazon {
         // Set up the insertion for the new auth disabler
         const referenceNode = pwlLoginClone.childNodes[4];
         referenceNode.parentNode.insertBefore(legalTextClone, referenceNode);
-
     }
-
 }
