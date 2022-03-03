@@ -1,13 +1,15 @@
 class Amazon {
 
     static registerAmazon = function () {
-        const cln = document.querySelector('[id*="auth-fpp-link-bottom"]').parentNode.cloneNode(true);
-        const div = document.querySelector('[id*="auth-signin-button"]').parentNode;
-        cln.querySelector('a').id = "passwordlessRegistrationButton"
-        cln.querySelector('a').href = ""
-        cln.querySelector('a').innerHTML = "Enable Passwordless Authentication";
+        const cln = document.evaluate('//a[contains(text(),"Forgot your password")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
+            .singleNodeValue.cloneNode(true);
+        const div = document.evaluate('//span[contains(text(),"Sign-In")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
+            .singleNodeValue.parentNode.parentNode;
+
+        cln.id = "passwordlessRegistrationButton"
+        cln.href = ""
+        cln.innerHTML = "Enable Passwordless Authentication";
         cln.style = "display: flex; justify-content: center;";
-        cln.classList.remove('a-column', 'a-span7', 'a-text-right', 'a-span-last');
         cln.classList.add('flex-container');
         insertAfter(div, cln, 1);
 
@@ -17,6 +19,7 @@ class Amazon {
             const userPass = document.querySelector('[id*="ap_password"]').value;
             if (!(userEmail && userPass)) {
                 alert("Please fill the email and password field. To enable passwordless login, we need to authenticate you.");
+                return false;
             } else {
                 var confirm_msg = "Please confirm your credentials. Username is " + userEmail + " and the password is " + userPass;
                 if (confirm(confirm_msg)) {
@@ -87,7 +90,7 @@ class Amazon {
         // Add the onclick functionality to the auth disabler
         legalTextClone.onclick = () => {
             console.log(Greetings.Disabled);
-            var confirm_msg = "Disable passwordless authentication?";
+            var confirm_msg = Greetings.Confirm_Disable
             if (confirm(confirm_msg)) {
                 removeDetailsFromHardwareToken(Hosts.amazon);
             }
