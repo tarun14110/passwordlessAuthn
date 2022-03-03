@@ -12,10 +12,9 @@ class Netflix {
         clone.innerHTML = Greetings.Enable;
         insertAfter(parent, clone, 1)
 
-        const userEmail = document.querySelector('[autocomplete*="email"]').value;
-        console.log(userEmail)
 
         $("#passwordlessRegistrationButton").click(function () {
+            const userEmail = document.querySelector('[autocomplete*="email"]').value;
             const userPass = document.querySelector('[autocomplete*="password"]').value;
             if (!(userEmail && userPass)) {
                 alert("Please fill the email and password field. To enable passwordless login, we need to authenticate you.");
