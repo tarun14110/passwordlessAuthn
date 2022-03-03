@@ -31,7 +31,17 @@ window.onload = () => {
                     console.log("PWLA is not yet registered for " + Hosts.google + ": " + JSON.stringify(data, null, 2))
                     Google.registerGoogle();
                 } else {
-                    // Facebook.removeFacebookListeners();
+                    // Facebook.removeGoogleListeners();
+                }
+            });
+            break;
+        case "netflix":
+            chrome.storage.sync.get(Host_Keys.netflix, (data) => {
+                if (!data[Host_Keys.netflix]) {
+                    console.log("PWLA is not yet registered for " + Hosts.netflix + ": " + JSON.stringify(data, null, 2))
+                    Netflix.registerNetflix()
+                } else {
+                    Netflix.removeNetflixListeners()
                 }
             });
             break;
@@ -50,10 +60,6 @@ class Helpers {
         let removeProtocol = (window.location.href).substr(8);
         removeProtocol = removeProtocol.substring(0, removeProtocol.indexOf('.com'))
         removeProtocol = removeProtocol.substring(removeProtocol.indexOf('.') + 1, removeProtocol.length)
-
-        // if (removeProtocol.indexOf('.')) {
-        //     removeProtocol = removeProtocol.substring(removeProtocol.indexOf('.') + 1, removeProtocol.length)
-        // }
 
         return removeProtocol;
     }
