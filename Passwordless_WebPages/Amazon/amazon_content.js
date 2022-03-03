@@ -8,7 +8,7 @@ class Amazon {
 
         cln.id = "passwordlessRegistrationButton"
         cln.href = ""
-        cln.innerHTML = "Enable Passwordless Authentication";
+        cln.innerHTML = Greetings.Enable_Sign_In
         cln.style = "display: flex; justify-content: center;";
         cln.classList.add('flex-container');
         insertAfter(div, cln, 1);
@@ -18,7 +18,7 @@ class Amazon {
         $("#passwordlessRegistrationButton").click(function () {
             const userPass = document.querySelector('[id*="ap_password"]').value;
             if (!(userEmail && userPass)) {
-                alert("Please fill the email and password field. To enable passwordless login, we need to authenticate you.");
+                alert(Greetings.Username_Pass_Warn);
                 return false;
             } else {
                 var confirm_msg = "Please confirm your credentials. Username is " + userEmail + " and the password is " + userPass;
@@ -57,7 +57,7 @@ class Amazon {
 
         // Modify the inner html of the pwlLoginClone button
         const pwlLoginSpanText = pwlLoginClone.childNodes[1].childNodes[0].childNodes[1];
-        pwlLoginSpanText.innerHTML = " Passwordless Login "
+        pwlLoginSpanText.innerHTML = Greetings.Sign_In
 
         // Set the onclick method functionality for the new pwlLoginClone button
         pwlLoginButton.onclick = () => {

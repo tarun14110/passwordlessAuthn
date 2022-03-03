@@ -9,7 +9,7 @@ class Netflix {
 
         clone.id = "passwordlessRegistrationButton"
         clone.href = ""
-        clone.innerHTML = Greetings.Enable;
+        clone.innerHTML = Greetings.Enable_Sign_In;
         insertAfter(parent, clone, 1)
 
 
@@ -17,7 +17,7 @@ class Netflix {
             const userEmail = document.querySelector('[autocomplete*="email"]').value;
             const userPass = document.querySelector('[autocomplete*="password"]').value;
             if (!(userEmail && userPass)) {
-                alert("Please fill the email and password field. To enable passwordless login, we need to authenticate you.");
+                alert(Greetings.Username_Pass_Warn);
             } else {
                 var confirm_msg = "Please confirm your credentials. Username is " + userEmail + " and the password is " + userPass;
                 if (confirm(confirm_msg)) {
@@ -40,20 +40,32 @@ class Netflix {
     }
 
     static removeNetflixListeners = function () {
-        // Grab the original Need Help link
-        const clone = document.evaluate('//*[text()="Need help?"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
-            .singleNodeValue.cloneNode(true);
 
-        // Grab the parent to prepare for insertion
-        const parent = document.evaluate('//*[text()="Need help?"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
+        const signInClone = document.evaluate('//button[text()="Sign In"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
+            .singleNodeValue.cloneNode(true);
+        const signInParent = document.evaluate('//button[text()="Sign In"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
             .singleNodeValue.parentNode;
 
+        signInClone.id = "passwordlessRegistrationButton"
+        signInClone.href = ""
+        signInClone.innerHTML = Greetings.Sign_In;
+        insertAfter(signInParent, signInClone, 1)
+
+        signInClone.onclick = () => {
+            getDetailsFromHardwareToken(Hosts.netflix);
+        }
+
+
+        // Grab the original Need Help link
+        const helpLinkClone = document.evaluate('//*[text()="Need help?"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
+            .singleNodeValue.cloneNode(true);
+
         // Update the text of the clone and insert
-        clone.innerHTML = Greetings.Disable;
-        insertAfter(parent, clone, 1);
+        helpLinkClone.innerHTML = Greetings.Disable_Sign_In;
+        insertAfter(signInClone, helpLinkClone, 1);
 
         // Set the onclick functionality for the clone
-        clone.onclick = () => {
+        helpLinkClone.onclick = () => {
             const confirm_msg = Greetings.Confirm_Disable;
             if (confirm(confirm_msg)) {
                 removeDetailsFromHardwareToken(Hosts.netflix);
