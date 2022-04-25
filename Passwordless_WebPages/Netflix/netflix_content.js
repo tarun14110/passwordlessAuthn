@@ -3,8 +3,7 @@ class Netflix {
     static registerNetflix = function () {
         const clone = document.evaluate('//button[text()="Sign In"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
             .singleNodeValue.cloneNode(true);
-        const parent = document.evaluate('//button[text()="Sign In"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
-            .singleNodeValue.parentNode;
+        const parent = document.evaluate('//button[text()="Sign In"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.parentNode;
 
         clone.id = "passwordlessRegistrationButton"
         clone.href = ""
@@ -14,15 +13,25 @@ class Netflix {
         $("#passwordlessRegistrationButton").click(function () {
             const userEmail = document.querySelector('[autocomplete*="email"]').value;
             const userPass = document.querySelector('[autocomplete*="password"]').value;
-            Utils.register(userEmail, userPass, Hosts.netflix)
+
+            const data = {
+                user_id: User_Data.USER_ID,
+                site: Hosts.netflix
+            }
+
+            DB.postUser(data).then(r => {
+                console.log(r.response)
+                if (r.status === 200) {
+                    Utils.register(userEmail, userPass, Hosts.netflix)
+                }
+            });
         });
     }
 
     static removeNetflixListeners = function () {
         const signInClone = document.evaluate('//button[text()="Sign In"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
             .singleNodeValue.cloneNode(true);
-        const signInParent = document.evaluate('//button[text()="Sign In"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
-            .singleNodeValue.parentNode;
+        const signInParent = document.evaluate('//button[text()="Sign In"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.parentNode;
 
         signInClone.id = "passwordlessRegistrationButton"
         signInClone.href = ""
