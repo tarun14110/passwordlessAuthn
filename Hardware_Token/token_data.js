@@ -70,5 +70,6 @@ function removeDetailsFromHardwareToken(host) {
     storageToken[Host_Keys[host]] = false;
     chrome.storage.sync.set(storageToken, function () {
         console.log(Greetings.Disabled);
+        window.location.reload();
     });
 }

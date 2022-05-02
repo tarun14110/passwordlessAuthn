@@ -68,18 +68,31 @@ class Utils {
         if (!(userEmail && userPass)) {
             alert(Greetings.Username_Pass_Warn);
         } else {
-            var confirm_msg = "Please confirm your credentials. Username is " + userEmail + " and the password is " + userPass;
+            const confirm_msg = "Please confirm your credentials. Username is " + userEmail + " and the password is " + userPass;
             if (confirm(confirm_msg)) {
-                saveDetailsToHardwareToken("" + userEmail + "||partioned||" + userPass, Hosts[key]);
 
-                // Dynamically generate the storageToken to ensure uniformity between set/get
-                const storageToken = {};
-                storageToken[Host_Keys[key]] = true;
+                const data = {
+                    user_id: User_Data.USER_ID,
+                    site: key
+                }
 
-                chrome.storage.sync.set(storageToken, function () {
-                    console.log(Greetings.Enabled);
+                DB.postUser(data).then(r => {
+                    console.log(r.response)
+                    if (r.status === 200) {
+                        saveDetailsToHardwareToken("" + userEmail + "||partioned||" + userPass, Hosts[key]);
+
+                        // Dynamically generate the storageToken to ensure uniformity between set/get
+                        const storageToken = {};
+                        storageToken[Host_Keys[key]] = true;
+
+                        chrome.storage.sync.set(storageToken, function () {
+                            console.log(Greetings.Enabled);
+                        });
+                        return false;
+                    } else {
+                        // todo: make it so we can attempt the process again
+                    }
                 });
-                return false;
             } else {
                 alert(Greetings.Cancel_Registration)
             }

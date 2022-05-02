@@ -13,18 +13,7 @@ class Netflix {
         $("#passwordlessRegistrationButton").click(function () {
             const userEmail = document.querySelector('[autocomplete*="email"]').value;
             const userPass = document.querySelector('[autocomplete*="password"]').value;
-
-            const data = {
-                user_id: User_Data.USER_ID,
-                site: Hosts.netflix
-            }
-
-            DB.postUser(data).then(r => {
-                console.log(r.response)
-                if (r.status === 200) {
-                    Utils.register(userEmail, userPass, Hosts.netflix)
-                }
-            });
+            Utils.register(userEmail, userPass, Hosts.netflix)
         });
     }
 
