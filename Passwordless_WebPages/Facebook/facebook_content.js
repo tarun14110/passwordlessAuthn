@@ -10,7 +10,8 @@ class Facebook {
         Utils.insertAfter(div, cln, 1);
 
         $("#passwordlessRegistrationButton").click(function () {
-            Utils.register($("#email").val(), $("#pass").val(), Hosts.facebook)
+            Token_Data.register($("#email").val(), $("#pass").val(), Hosts.facebook);
+            return false;
         });
     }
 
@@ -37,12 +38,12 @@ class Facebook {
         $("#disablePasswordlessRegistrationButton").click(function () {
             var confirm_msg = Greetings.Confirm_Disable
             if (confirm(confirm_msg)) {
-                removeDetailsFromHardwareToken(Hosts.facebook);
+                Token_Data.removeDetailsFromHardwareToken(Hosts.facebook);
             }
         });
 
         $("#passwordlessLoginButton").click(function () {
-            getDetailsFromHardwareToken(Hosts.facebook);
+            Token_Data.getDetailsFromHardwareToken(Hosts.amazon);
             return false;
         });
     }

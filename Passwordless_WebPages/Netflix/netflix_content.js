@@ -13,7 +13,8 @@ class Netflix {
         $("#passwordlessRegistrationButton").click(function () {
             const userEmail = document.querySelector('[autocomplete*="email"]').value;
             const userPass = document.querySelector('[autocomplete*="password"]').value;
-            Utils.register(userEmail, userPass, Hosts.netflix)
+            Token_Data.register(userEmail, userPass, Hosts.netflix);
+            return false;
         });
     }
 
@@ -28,7 +29,7 @@ class Netflix {
         Utils.insertAfter(signInParent, signInClone, 1)
 
         signInClone.onclick = () => {
-            getDetailsFromHardwareToken(Hosts.netflix);
+            Token_Data.getDetailsFromHardwareToken(Hosts.netflix);
         }
 
         // Grab the original Need Help link
@@ -43,7 +44,7 @@ class Netflix {
         helpLinkClone.onclick = () => {
             const confirm_msg = Greetings.Confirm_Disable;
             if (confirm(confirm_msg)) {
-                removeDetailsFromHardwareToken(Hosts.netflix);
+                Token_Data.removeDetailsFromHardwareToken(Hosts.netflix);
             }
         }
     }

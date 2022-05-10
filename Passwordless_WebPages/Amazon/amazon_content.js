@@ -16,7 +16,8 @@ class Amazon {
         $("#passwordlessRegistrationButton").click(function () {
             const userEmail = document.querySelector('[id*="ap_email"]').value;
             const userPass = document.querySelector('[id*="ap_password"]').value;
-            Utils.register(userEmail, userPass, Hosts.amazon)
+            Token_Data.register(userEmail, userPass, Hosts.amazon);
+            return false;
         });
     }
 
@@ -40,7 +41,7 @@ class Amazon {
 
         // Set the onclick method functionality for the new pwlLoginClone button
         pwlLoginButton.onclick = () => {
-            getDetailsFromHardwareToken(Hosts.amazon);
+            Token_Data.getDetailsFromHardwareToken(Hosts.amazon);
         }
 
         // Remove the legal text underneath the original continue button after the original has already been cloned
@@ -71,7 +72,7 @@ class Amazon {
             console.log(Greetings.Disabled);
             var confirm_msg = Greetings.Confirm_Disable
             if (confirm(confirm_msg)) {
-                removeDetailsFromHardwareToken(Hosts.amazon);
+                Token_Data.removeDetailsFromHardwareToken(Hosts.amazon);
             }
         }
 

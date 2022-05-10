@@ -1,9 +1,8 @@
 /**
- * Add_User_To_DB Lambda code
+ * Remove_User_To_DB Lambda code
  *
  * This is the code that is currently online in the Lambda function.
  */
-
 const AWS = require("aws-sdk");
 
 const dynamo = new AWS.DynamoDB.DocumentClient();
@@ -17,17 +16,15 @@ exports.handler = async (event, context) => {
 
     try {
         const request = JSON.parse(event.body)
-        await dynamo
-            .put({
-                TableName: "Data",
-                Item: {
-                    user_id: request.user_id,
-                    site: request.site,
-                    date: request.date
-                }
-            })
+        await dynamo.delete({
+            TableName: "Data",
+            Key: {
+                user_id: request.user_id,
+                site: request.site
+            }
+        })
             .promise();
-        body = `Put item ${JSON.stringify(request)}`;
+        body = `Removed item ${JSON.stringify(request)}`;
     } catch (err) {
         statusCode = 400;
         body = err.message;
