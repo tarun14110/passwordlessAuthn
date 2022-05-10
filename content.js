@@ -1,8 +1,8 @@
 //on init perform based on chrome storage value
 window.onload = () => {
 
-    console.log(Helpers.FindHostName());
-    const hostName = Helpers.FindHostName();
+    console.log(Utils.findHostName());
+    const hostName = Utils.findHostName();
 
     switch (hostName) {
         case "amazon":
@@ -20,6 +20,7 @@ window.onload = () => {
                 if (!data[Host_Keys.facebook]) {
                     console.log("PWLA is not yet registered for " + Hosts.facebook + ": " + JSON.stringify(data, null, 2))
                     Facebook.registerFacebook();
+                    return false;
                 } else {
                     Facebook.removeFacebookListeners();
                 }
@@ -54,9 +55,9 @@ window.onload = () => {
  * Helper Functions
  */
 
-class Helpers {
+class Utils {
 
-    static FindHostName() {
+    static findHostName() {
         let removeProtocol = (window.location.href).substr(8);
         removeProtocol = removeProtocol.substring(0, removeProtocol.indexOf('.com'))
         removeProtocol = removeProtocol.substring(removeProtocol.indexOf('.') + 1, removeProtocol.length)
@@ -64,5 +65,12 @@ class Helpers {
         return removeProtocol;
     }
 
+    static insertAfter(referenceNode, newNode, count) {
+        let refNode = referenceNode;
+        for (let i = 0; i < count; i++) {
+            refNode = refNode.nextSibling;
+        }
+        referenceNode.parentNode.insertBefore(newNode, refNode);
+    }
 }
 

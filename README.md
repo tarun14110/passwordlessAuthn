@@ -6,7 +6,7 @@ In development.
 - [x] amazon.com 
 - [ ] gmail.com
 - [ ] microsoft.com
-- [ ] netflix.com
+- [x] netflix.com
 - [ ] youtube.com
 - [ ] twitter.com
 - [ ] reddit.com
