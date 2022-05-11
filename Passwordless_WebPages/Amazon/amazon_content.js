@@ -77,5 +77,13 @@ class Amazon {
         // Set up the insertion for the new auth disabler
         const referenceNode = pwlLoginClone.childNodes[4];
         referenceNode.parentNode.insertBefore(removePassAuthButton, referenceNode);
+
+        const removeSignInText = document.evaluate('//label[contains(text(),"Email or")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        const removeEmailField = document.evaluate('/html/body/div[1]/div[1]/div[2]/div/div[2]/div/div[1]/form/div/div/div/div[1]/input[1]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        const removeContinueButton = document.evaluate('/html/body/div[1]/div[1]/div[2]/div/div[2]/div/div[1]/form/div/div/div/div[2]/span', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+
+        removeSignInText.parentNode.removeChild(removeSignInText);
+        removeEmailField.parentNode.removeChild(removeEmailField);
+        removeContinueButton.parentNode.removeChild(removeContinueButton);
     }
 }

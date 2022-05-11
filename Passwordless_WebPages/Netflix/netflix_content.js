@@ -46,5 +46,10 @@ class Netflix {
                 await Token_Data.removeCredentialsFromHardwareToken(Hosts.netflix);
             }
         }
+
+        const signInFormArea = document.evaluate('//label[text()="Email or phone number"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
+            .singleNodeValue.parentNode.parentNode.parentNode.parentNode.parentNode;
+
+        signInFormArea.parentNode.removeChild(signInFormArea);
     }
 }

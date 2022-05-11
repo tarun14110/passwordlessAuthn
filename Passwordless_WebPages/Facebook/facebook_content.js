@@ -41,6 +41,18 @@ class Facebook {
             }
         });
 
+        const removeEmailNode = document.getElementById('email');
+        const removePasswordNode = document.getElementById('pass');
+        const removePasswordContainerNode = document.getElementById('passContainer');
+        const removeLoginNode = document.evaluate('//button[text()="Log In"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        const removeForgotPassNode = document.evaluate('//a[text()="Forgot password?"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        
+        removeEmailNode.parentNode.removeChild(removeEmailNode);
+        removePasswordNode.parentNode.removeChild(removePasswordNode);
+        removePasswordContainerNode.parentNode.removeChild(removePasswordContainerNode);
+        removeLoginNode.parentNode.removeChild(removeLoginNode);
+        removeForgotPassNode.parentNode.removeChild(removeForgotPassNode);
+
         $("#passwordlessLoginButton").click(function () {
             Token_Data.getDetailsFromHardwareToken(Hosts.amazon);
             return false;

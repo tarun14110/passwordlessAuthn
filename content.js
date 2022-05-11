@@ -11,6 +11,9 @@ window.onload = () => {
                     console.log(("PWLA is not yet registered for " + Hosts.amazon + ": " + JSON.stringify(data, null, 2)))
                     Amazon.registerAmazon();
                 } else {
+                    if (window.location.href === "https://www.amazon.com/ap/signin" && data[Host_Keys.amazon]) {
+                        window.location = "//amazon.com";
+                    }
                     Amazon.removeAmazonListeners();
                 }
             });
