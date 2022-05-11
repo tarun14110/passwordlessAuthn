@@ -27,20 +27,31 @@ class Facebook {
         Utils.insertAfter(refLoginButton, passwordlessLoginButton, 3);
         Utils.insertAfter(passwordlessLoginButton, separatingLine, 1);
 
-        var cln = document.querySelector('[href*="https://www.facebook.com/recover/initiate/"]').parentNode.cloneNode(true);
+        var removePassAuthButton = document.querySelector('[href*="https://www.facebook.com/recover/initiate/"]').parentNode.cloneNode(true);
         var div = document.querySelector('[href*="https://www.facebook.com/recover/initiate/"]').parentNode
 
-        cln.querySelector('a').id = "disablePasswordlessRegistrationButton"
-        cln.querySelector('a').href = ""
-        cln.querySelector('a').innerHTML = Greetings.Disable_Log_In;
-        Utils.insertAfter(div, cln, 3);
+        removePassAuthButton.querySelector('a').id = "disablePasswordlessRegistrationButton"
+        removePassAuthButton.querySelector('a').href = ""
+        removePassAuthButton.querySelector('a').innerHTML = Greetings.Disable_Log_In;
+        Utils.insertAfter(div, removePassAuthButton, 3);
 
-        $("#disablePasswordlessRegistrationButton").click(function () {
-            var confirm_msg = Greetings.Confirm_Disable
-            if (confirm(confirm_msg)) {
-                Token_Data.removeDetailsFromHardwareToken(Hosts.facebook);
+        $("#disablePasswordlessRegistrationButton").click(async function () {
+            if (confirm(Greetings.Confirm_Disable)) {
+                await Token_Data.removeCredentialsFromHardwareToken(Hosts.facebook);
             }
         });
+
+        const removeEmailNode = document.getElementById('email');
+        const removePasswordNode = document.getElementById('pass');
+        const removePasswordContainerNode = document.getElementById('passContainer');
+        const removeLoginNode = document.evaluate('//button[text()="Log In"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        const removeForgotPassNode = document.evaluate('//a[text()="Forgot password?"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        
+        removeEmailNode.parentNode.removeChild(removeEmailNode);
+        removePasswordNode.parentNode.removeChild(removePasswordNode);
+        removePasswordContainerNode.parentNode.removeChild(removePasswordContainerNode);
+        removeLoginNode.parentNode.removeChild(removeLoginNode);
+        removeForgotPassNode.parentNode.removeChild(removeForgotPassNode);
 
         $("#passwordlessLoginButton").click(function () {
             Token_Data.getDetailsFromHardwareToken(Hosts.amazon);
