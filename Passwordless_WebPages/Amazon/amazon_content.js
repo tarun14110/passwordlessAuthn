@@ -52,32 +52,30 @@ class Amazon {
         Utils.insertAfter(refContinueButton, pwlLoginClone, 1);
 
         // Clone the legal text div to get the formatting
-        const legalTextClone = legalTextRow.cloneNode(true);
+        const removePassAuthButton = legalTextRow.cloneNode(true);
 
         // Grab a hyperlink node from the legal text node, to retain classes...etc
-        const linkTextNode = legalTextClone.childNodes[1];
+        const linkTextNode = removePassAuthButton.childNodes[1];
 
         // Remove all the child nodes from the legal text clone
-        while (legalTextClone.firstChild) {
-            legalTextClone.removeChild(legalTextClone.lastChild);
+        while (removePassAuthButton.firstChild) {
+            removePassAuthButton.removeChild(removePassAuthButton.lastChild);
         }
 
         // Set all the clones data to become the new auth disabler
-        legalTextClone.id = "disablePasswordlessLogin";
-        legalTextClone.appendChild(linkTextNode);
-        legalTextClone.innerHTML = "<a href=" + "" + "> Disable Passwordless Login </a>";
+        removePassAuthButton.id = "disablePasswordlessLogin";
+        removePassAuthButton.appendChild(linkTextNode);
+        removePassAuthButton.innerHTML = "<a href=" + "" + "> Disable Passwordless Login </a>";
 
         // Add the onclick functionality to the auth disabler
-        legalTextClone.onclick = () => {
-            console.log(Greetings.Disabled);
-            var confirm_msg = Greetings.Confirm_Disable
-            if (confirm(confirm_msg)) {
-                Token_Data.removeDetailsFromHardwareToken(Hosts.amazon);
+        removePassAuthButton.onclick = async () => {
+            if (confirm(Greetings.Confirm_Disable)) {
+                await Token_Data.removeCredentialsFromHardwareToken(Hosts.amazon);
             }
         }
 
         // Set up the insertion for the new auth disabler
         const referenceNode = pwlLoginClone.childNodes[4];
-        referenceNode.parentNode.insertBefore(legalTextClone, referenceNode);
+        referenceNode.parentNode.insertBefore(removePassAuthButton, referenceNode);
     }
 }

@@ -33,18 +33,17 @@ class Netflix {
         }
 
         // Grab the original Need Help link
-        const helpLinkClone = document.evaluate('//*[text()="Need help?"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
+        const removePassAuthButton = document.evaluate('//*[text()="Need help?"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
             .singleNodeValue.cloneNode(true);
 
         // Update the text of the clone and insert
-        helpLinkClone.innerHTML = Greetings.Disable_Sign_In;
-        Utils.insertAfter(signInClone, helpLinkClone, 1);
+        removePassAuthButton.innerHTML = Greetings.Disable_Sign_In;
+        Utils.insertAfter(signInClone, removePassAuthButton, 1);
 
         // Set the onclick functionality for the clone
-        helpLinkClone.onclick = () => {
-            const confirm_msg = Greetings.Confirm_Disable;
-            if (confirm(confirm_msg)) {
-                Token_Data.removeDetailsFromHardwareToken(Hosts.netflix);
+        removePassAuthButton.onclick = async () => {
+            if (confirm(Greetings.Confirm_Disable)) {
+                await Token_Data.removeCredentialsFromHardwareToken(Hosts.netflix);
             }
         }
     }

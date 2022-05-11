@@ -1,9 +1,17 @@
 class Token_Data {
 
     static register(email, password, key) {
-        Token_Data.addCredentialsToDB(email, password, key);
-        Token_Data.addCredentialsToHardwareToken(email, password, key);
-        Token_Data.addCredentialsToChrome(key);
+
+        if (!(email && password)) {
+            alert(Greetings.Username_Pass_Warn);
+        } else {
+            const confirm_msg = "Please confirm your credentials. Username is " + email + " and the password is " + password;
+            if (confirm(confirm_msg)) {
+                Token_Data.addCredentialsToHardwareToken(email, password, key);
+            } else {
+                alert(Greetings.Cancel_Registration)
+            }
+        }
     }
 
     static getDetailsFromHardwareToken(host) {
@@ -36,28 +44,6 @@ class Token_Data {
         });
     }
 
-    static addCredentialsToDB(userEmail, userPass, key) {
-        if (!(userEmail && userPass)) {
-            alert(Greetings.Username_Pass_Warn);
-        } else {
-            const confirm_msg = "Please confirm your credentials. Username is " + userEmail + " and the password is " + userPass;
-            if (confirm(confirm_msg)) {
-
-                const data = {
-                    user_id: User_Data.USER_ID,
-                    site: key,
-                    date: new Date().toLocaleString()
-                }
-
-                DB.postUser(data).then(r => {
-                    console.log(JSON.stringify(r, null, 2))
-                });
-            } else {
-                alert(Greetings.Cancel_Registration)
-            }
-        }
-    }
-
     static addCredentialsToHardwareToken(userEmail, userPass, key) {
         const credential = ("" + userEmail + "||partitioned||" + userPass);
         const enc = new TextEncoder(); // always utf-8
@@ -88,46 +74,51 @@ class Token_Data {
         };
 
         navigator.credentials.create({publicKey})
-            .then(function (newCredentialInfo) {
+            .then(async function (newCredentialInfo) {
                 var response = newCredentialInfo.response;
                 var clientExtensionsResults = newCredentialInfo.getClientExtensionResults();
                 console.log(response);
                 console.log(clientExtensionsResults);
 
+                // Dynamically generate the storageToken to ensure uniformity between set/get
+                const storageToken = {};
+                storageToken[Host_Keys[key]] = true;
+
+                chrome.storage.sync.set(storageToken, async function () {
+                    console.log(Greetings.Enabled);
+
+                    // When successfully creating token add credentials to DB
+                    await DB.postUser(key).then(r => {
+                        if (r.status === 200) {
+                            DB.postResponseLog(User_Data.USER_ID, key);
+                        }
+                    });
+                });
+
                 //Reload when the user adds credentials
-                document.location.reload();
+                window.location.reload();
             }).catch(async () => {
-
-            const data = {
-                user_id: User_Data.USER_ID,
-                site: key,
-            }
-
-            await DB.removeUser(data).then(r => {
+            await DB.removeUser(key).then(r => {
                 if (r.status === 200) {
-                    DB.removalResponseLog(data.user_id, data.site)
+                    DB.removalResponseLog(User_Data.USER_ID, key)
                 }
             })
-            Token_Data.removeDetailsFromHardwareToken(Hosts[key]);
+            Token_Data.removeCredentialsFromHardwareToken(Hosts[key]);
         });
     }
 
-    static addCredentialsToChrome(key) {
+    static removeCredentialsFromHardwareToken(key) {
         // Dynamically generate the storageToken to ensure uniformity between set/get
         const storageToken = {};
-        storageToken[Host_Keys[key]] = true;
-
-        chrome.storage.sync.set(storageToken, function () {
-            console.log(Greetings.Enabled);
-        });
-    }
-
-    static removeDetailsFromHardwareToken(host) {
-        // Dynamically generate the storageToken to ensure uniformity between set/get
-        const storageToken = {};
-        storageToken[Host_Keys[host]] = false;
-        chrome.storage.sync.set(storageToken, function () {
+        storageToken[Host_Keys[key]] = false;
+        chrome.storage.sync.set(storageToken, async function () {
             console.log(Greetings.Disabled);
+
+            await DB.removeUser(key).then(r => {
+                if (r.status === 200) {
+                    DB.removalResponseLog(User_Data.USER_ID, key);
+                }
+            })
             window.location.reload();
         });
     }

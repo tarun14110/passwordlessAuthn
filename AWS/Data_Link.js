@@ -1,13 +1,19 @@
 const BASE_URL = "https://6fjnmm13sl.execute-api.us-west-2.amazonaws.com";
+const headers = {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'PUT,OPTIONS',
+    'Access-Control-Allow-Headers': '*'
+}
 
 class DB {
-    
-    static postUser = async (data = {}) => {
-        const headers = {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'PUT,OPTIONS',
-            'Access-Control-Allow-Headers': '*'
+
+    static postUser = async (key = {}) => {
+
+        const data = {
+            user_id: User_Data.USER_ID,
+            site: key,
+            date: new Date().toLocaleString()
         }
 
         const response = await fetch(BASE_URL + "/user", {
@@ -25,12 +31,11 @@ class DB {
         }
     }
 
-    static removeUser = async (data = {}) => {
-        const headers = {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'PUT,OPTIONS',
-            'Access-Control-Allow-Headers': '*'
+    static removeUser = async (key = {}) => {
+
+        const data = {
+            user_id: User_Data.USER_ID,
+            site: key,
         }
 
         const response = await fetch(BASE_URL + "/user", {
@@ -50,6 +55,10 @@ class DB {
 
     static removalResponseLog(user_id, site) {
         console.log("Successfully removed " + user_id + " from " + site + ".");
+    }
+
+    static postResponseLog(user_id, site) {
+        console.log("Successfully added " + user_id + " with " + site + ".");
     }
 
 }
