@@ -1,5 +1,7 @@
 class Token_Data {
 
+    static refreshType = "none";
+
     static register(email, password, key) {
 
         if (!(email && password)) {
@@ -95,8 +97,9 @@ class Token_Data {
                     });
                 });
 
-                //Reload when the user adds credentials
-                window.location.reload();
+                //Reload is determined before the user adds credentials
+                Token_Data.afterCredentialRefresh();
+
             }).catch(async () => {
             await DB.removeUser(key).then(r => {
                 if (r.status === 200) {
@@ -121,5 +124,20 @@ class Token_Data {
             })
             window.location.reload();
         });
+    }
+
+    static afterCredentialRefresh() {
+
+        if (Token_Data.refreshType === Refresh_Types.Single) {
+            window.location.reload();
+        }
+
+        if (Token_Data.refreshType === Refresh_Types.Double) {
+            history.back();
+        }
+
+        if (Token_Data.refreshType === Refresh_Types.Amazon) {
+            window.location.replace("https://www.amazon.com/")
+        }
     }
 }
