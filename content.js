@@ -49,6 +49,16 @@ window.onload = () => {
                 }
             });
             break;
+        case "yahoo":
+            chrome.storage.sync.get(Host_Keys.yahoo, (data) => {
+                if (!data[Host_Keys.yahoo]) {
+                    console.log("PWLA is not yet registered for " + Hosts.yahoo + ": " + JSON.stringify(data, null, 2))
+                    Yahoo.registerYahoo();
+                } else {
+                    Yahoo.removeYahooListeners();
+                }
+            });
+            break;
         default:
             console.log(hostName + " is not available for Passwordless Authentication");
     }

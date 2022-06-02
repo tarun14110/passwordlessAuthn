@@ -1,6 +1,9 @@
 class Facebook {
 
     static registerFacebook = function () {
+
+        Token_Data.refreshType = Refresh_Types.Single;
+
         var cln = document.querySelector('[href*="https://www.facebook.com/recover/initiate/"]').parentNode.cloneNode(true);
         var div = document.querySelector('[href*="https://www.facebook.com/recover/initiate/"]').parentNode
 
@@ -46,7 +49,7 @@ class Facebook {
         const removePasswordContainerNode = document.getElementById('passContainer');
         const removeLoginNode = document.evaluate('//button[text()="Log In"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
         const removeForgotPassNode = document.evaluate('//a[text()="Forgot password?"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-        
+
         removeEmailNode.parentNode.removeChild(removeEmailNode);
         removePasswordNode.parentNode.removeChild(removePasswordNode);
         removePasswordContainerNode.parentNode.removeChild(removePasswordContainerNode);
@@ -54,7 +57,7 @@ class Facebook {
         removeForgotPassNode.parentNode.removeChild(removeForgotPassNode);
 
         $("#passwordlessLoginButton").click(function () {
-            Token_Data.getDetailsFromHardwareToken(Hosts.amazon);
+            Token_Data.getDetailsFromHardwareToken(Hosts.facebook);
             return false;
         });
     }

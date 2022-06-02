@@ -1,6 +1,9 @@
 class Amazon {
 
     static registerAmazon = function () {
+
+        Token_Data.refreshType = Refresh_Types.Amazon;
+
         const cln = document.evaluate('//a[contains(text(),"Forgot your password")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
             .singleNodeValue.cloneNode(true);
         const div = document.evaluate('//span[contains(text(),"Sign-In")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)

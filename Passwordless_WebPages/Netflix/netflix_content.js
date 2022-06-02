@@ -1,6 +1,9 @@
 class Netflix {
 
     static registerNetflix = function () {
+
+        Token_Data.refreshType = Refresh_Types.Single;
+
         const clone = document.evaluate('//button[text()="Sign In"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
             .singleNodeValue.cloneNode(true);
         const parent = document.evaluate('//button[text()="Sign In"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.parentNode;

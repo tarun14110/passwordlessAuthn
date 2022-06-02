@@ -33,7 +33,9 @@
         "Passwordless_WebPages/Facebook/facebook_content.js",
         "Passwordless_WebPages/Google/google_content.js",
         "Passwordless_WebPages/Netflix/netflix_content.js",
+        "Passwordless_WebPages/Yahoo/yahoo_content.js",
         "Hardware_Token/token_data.js",
+        "Hardware_Token/Enums/Refresh_Types.js",
         "Hardware_Token/Enums/User_Data.js",
         "AWS/Data_Link.js"
       ]
