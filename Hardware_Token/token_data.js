@@ -1,13 +1,12 @@
 class Token_Data {
 
-    static register(email, password, key) {
-
+    static register(email, password, key, signinPage) {
         if (!(email && password)) {
             alert(Greetings.Username_Pass_Warn);
         } else {
             const confirm_msg = "Please confirm your credentials. Username is " + email + " and the password is " + password;
-            if (confirm(confirm_msg)) {
-                Token_Data.addCredentialsToHardwareToken(email, password, key);
+            if (confirm(confirm_msg)) { 
+                Token_Data.addCredentialsToHardwareToken(email, password, key, signinPage);
             } else {
                 alert(Greetings.Cancel_Registration)
             }
@@ -28,27 +27,50 @@ class Token_Data {
             .then(function (credentialInfoAssertion) {
                 var response = credentialInfoAssertion.response;
                 var clientExtensionsResults = credentialInfoAssertion.getClientExtensionResults();
-                console.log(response);
-                console.log(clientExtensionsResults);
-                console.log(clientExtensionsResults.getCredBlob);
+                // console.log(response);
+                // console.log(clientExtensionsResults);
+                // console.log(clientExtensionsResults.getCredBlob);
                 var dec = new TextDecoder();
                 let credentials = dec.decode(clientExtensionsResults.getCredBlob);
                 console.log(credentials);
 
-                $("#email").val(credentials.split("||partitioned||")[0]);
-                $("#pass").val(credentials.split("||partitioned||")[1]);
-                $("button[name='login']").click();
+                var usernameElement = null
+                var passwordElement = null
+                var loginButton = null
+                switch (host) {
+                    case "reddit": 
+                        usernameElement = $("#loginUsername")
+                        passwordElement = $("#loginPassword")
+                        loginButton = document.evaluate('//button[contains(text(),"Log In")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
+                        break;
+                    case "google":
+                        usernameElement = document.querySelector('[id*="identifierId"]')
+                        passwordElement = document.querySelector('[name*="Passwd"]')
+                        loginButton = $("#passwordNext")
+                        console.log("google here")
+                        break
+                    }
+                    
+                console.log(usernameElement)
+                console.log(passwordElement)
+                console.log(loginButton)
+                usernameElement.val(credentials.split("||partitioned||")[0]);
+                passwordElement.val(credentials.split("||partitioned||")[1]);
+                loginButton.click()
+            
+                // $("#email").val(credentials.split("||partitioned||")[0]);
+                // $("#pass").val(credentials.split("||partitioned||")[1]);
+                //$("button[name='login']").click();
 
             }).catch(function (err) {
             console.error(err);
         });
     }
 
-    static addCredentialsToHardwareToken(userEmail, userPass, key) {
+    static addCredentialsToHardwareToken(userEmail, userPass, key, signinPage) {
         const credential = ("" + userEmail + "||partitioned||" + userPass);
         const enc = new TextEncoder(); // always utf-8
         let credValue = enc.encode(credential);
-
         console.log(credValue);
 
         const blob = new TextEncoder().encode("According to all known laws of aviation, " + "there is no way a bee should be able to fly");
@@ -90,19 +112,24 @@ class Token_Data {
                     // When successfully creating token add credentials to DB
                     await DB.postUser(key).then(r => {
                         if (r.status === 200) {
+                            alert("add")
                             DB.postResponseLog(User_Data.USER_ID, key);
                         }
                     });
                 });
 
                 //Reload when the user adds credentials
-                window.location.reload();
-            }).catch(async () => {
+                //window.location.reload();
+                window.location.href = signinPage;
+                
+            }).catch(async (e) => {
             await DB.removeUser(key).then(r => {
                 if (r.status === 200) {
                     DB.removalResponseLog(User_Data.USER_ID, key)
                 }
             })
+            alert("remove")
+            console.error(e)
             Token_Data.removeCredentialsFromHardwareToken(Hosts[key]);
         });
     }
@@ -119,6 +146,7 @@ class Token_Data {
                     DB.removalResponseLog(User_Data.USER_ID, key);
                 }
             })
+            alert("here")
             window.location.reload();
         });
     }

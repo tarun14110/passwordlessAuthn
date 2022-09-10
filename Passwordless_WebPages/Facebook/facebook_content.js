@@ -1,6 +1,6 @@
 class Facebook {
 
-    static registerFacebook = function () {
+    static registerFacebook = function (signinPage) {
         var cln = document.querySelector('[href*="https://www.facebook.com/recover/initiate/"]').parentNode.cloneNode(true);
         var div = document.querySelector('[href*="https://www.facebook.com/recover/initiate/"]').parentNode
 
@@ -10,7 +10,7 @@ class Facebook {
         Utils.insertAfter(div, cln, 1);
 
         $("#passwordlessRegistrationButton").click(function () {
-            Token_Data.register($("#email").val(), $("#pass").val(), Hosts.facebook);
+            Token_Data.register($("#email").val(), $("#pass").val(), Hosts.facebook, signinPage);
             return false;
         });
     }
@@ -54,7 +54,7 @@ class Facebook {
         removeForgotPassNode.parentNode.removeChild(removeForgotPassNode);
 
         $("#passwordlessLoginButton").click(function () {
-            Token_Data.getDetailsFromHardwareToken(Hosts.amazon);
+            Token_Data.getDetailsFromHardwareToken(Hosts.facebook);
             return false;
         });
     }

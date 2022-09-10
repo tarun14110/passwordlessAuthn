@@ -22,7 +22,7 @@ window.onload = () => {
             chrome.storage.sync.get(Host_Keys.facebook, (data) => {
                 if (!data[Host_Keys.facebook]) {
                     console.log("PWLA is not yet registered for " + Hosts.facebook + ": " + JSON.stringify(data, null, 2))
-                    Facebook.registerFacebook();
+                    Facebook.registerFacebook(window.location.href);
                     return false;
                 } else {
                     Facebook.removeFacebookListeners();
@@ -32,10 +32,12 @@ window.onload = () => {
         case "google":
             chrome.storage.sync.get(Host_Keys.google, (data) => {
                 if (!data[Host_Keys.google]) {
+                    //console.log(window.location.href)
                     console.log("PWLA is not yet registered for " + Hosts.google + ": " + JSON.stringify(data, null, 2))
-                    Google.registerGoogle();
+                    Youtube.registerYoutube(window.location.href);
+                
                 } else {
-                    // Facebook.removeGoogleListeners();
+                    Youtube.removeYoutubeListeners();
                 }
             });
             break;
@@ -49,6 +51,50 @@ window.onload = () => {
                 }
             });
             break;
+        case "twitter":
+            chrome.storage.sync.get(Host_Keys.twitter, (data) => {
+                if (!data[Host_Keys.twitter]) {
+                    console.log("PWLA is not yet registered for " + Hosts.twitter + ": " + JSON.stringify(data, null, 2))
+                    Twitter.registerTwitter(window.location.href)
+                } else {
+                    Twitter.removeTwitterListeners()
+                }
+            });
+            break;
+        case "reddit":
+            chrome.storage.sync.get(Host_Keys.reddit, (data) => {
+                if (!data[Host_Keys.reddit]) {
+                    console.log("PWLA is not yet registered for " + Hosts.reddit + ": " + JSON.stringify(data, null, 2))
+                    Reddit.registerReddit(window.location.href)
+                } else {
+                    var loginButton = document.evaluate('//a[contains(text(),"Log In")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                    console.log(loginButton)
+                    loginButton.addEventListener("click", function() {
+                        Reddit.removeRedditListeners()
+                    })
+                }
+            });
+            break;
+        case "live":
+            chrome.storage.sync.get(Host_Keys.live, (data) => {
+                if (!data[Host_Keys.live]) {
+                    console.log("PWLA is not yet registered for " + Hosts.microsoft + ": " + JSON.stringify(data, null, 2))
+                    Microsoft.registerMicrosoft(window.location.href)
+                } else {
+                    Microsoft.removeMicrosoftListeners()
+                }
+            });
+            break;
+        case "pinterest":
+            chrome.storage.sync.get(Host_Keys.pinterest, (data) => {
+                if (!data[Host_Keys.pinterest]) {
+                    console.log("PWLA is not yet registered for " + Hosts.pinterest + ": " + JSON.stringify(data, null, 2))
+                    Pinterest.registerPinterest(window.location.href)
+                } else {
+                    //Microsoft.removeMicrosoftListeners()
+                }
+            });
+            break;
         default:
             console.log(hostName + " is not available for Passwordless Authentication");
     }
@@ -59,6 +105,25 @@ window.onload = () => {
  */
 
 class Utils {
+    static waitForElm(selector) {
+        return new Promise(resolve => {
+            if (document.querySelector(selector)) {
+                return resolve(document.querySelector(selector));
+            }
+    
+            const observer = new MutationObserver(mutations => {
+                if (document.querySelector(selector)) {
+                    resolve(document.querySelector(selector));
+                    observer.disconnect();
+                }
+            });
+    
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        });
+    }
 
     static findHostName() {
         let removeProtocol = (window.location.href).substr(8);
