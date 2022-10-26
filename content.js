@@ -9,7 +9,7 @@ window.onload = () => {
             chrome.storage.sync.get(Host_Keys.amazon, (data) => {
                 if (!data[Host_Keys.amazon]) {
                     console.log(("PWLA is not yet registered for " + Hosts.amazon + ": " + JSON.stringify(data, null, 2)))
-                    Amazon.registerAmazon();
+                    Amazon.registerAmazon(null);
                 } else {
                     if (window.location.href === "https://www.amazon.com/ap/signin" && data[Host_Keys.amazon]) {
                         window.location = "//amazon.com";
@@ -22,7 +22,7 @@ window.onload = () => {
             chrome.storage.sync.get(Host_Keys.facebook, (data) => {
                 if (!data[Host_Keys.facebook]) {
                     console.log("PWLA is not yet registered for " + Hosts.facebook + ": " + JSON.stringify(data, null, 2))
-                    Facebook.registerFacebook(window.location.href);
+                    Facebook.registerFacebook(null);
                     return false;
                 } else {
                     Facebook.removeFacebookListeners();
@@ -35,7 +35,6 @@ window.onload = () => {
                     //console.log(window.location.href)
                     console.log("PWLA is not yet registered for " + Hosts.google + ": " + JSON.stringify(data, null, 2))
                     Youtube.registerYoutube(window.location.href);
-                
                 } else {
                     Youtube.removeYoutubeListeners();
                 }
@@ -45,7 +44,7 @@ window.onload = () => {
             chrome.storage.sync.get(Host_Keys.netflix, (data) => {
                 if (!data[Host_Keys.netflix]) {
                     console.log("PWLA is not yet registered for " + Hosts.netflix + ": " + JSON.stringify(data, null, 2))
-                    Netflix.registerNetflix()
+                    Netflix.registerNetflix(null)
                 } else {
                     Netflix.removeNetflixListeners()
                 }
@@ -67,11 +66,10 @@ window.onload = () => {
                     console.log("PWLA is not yet registered for " + Hosts.reddit + ": " + JSON.stringify(data, null, 2))
                     Reddit.registerReddit(window.location.href)
                 } else {
-                    var loginButton = document.evaluate('//a[contains(text(),"Log In")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-                    console.log(loginButton)
-                    loginButton.addEventListener("click", function() {
-                        Reddit.removeRedditListeners()
-                    })
+                    //var loginButton = document.evaluate('//a[contains(text(),"Log In")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                    //console.log(loginButton)
+                    Reddit.removeRedditListeners()
+                    
                 }
             });
             break;
@@ -91,7 +89,17 @@ window.onload = () => {
                     console.log("PWLA is not yet registered for " + Hosts.pinterest + ": " + JSON.stringify(data, null, 2))
                     Pinterest.registerPinterest(window.location.href)
                 } else {
-                    //Microsoft.removeMicrosoftListeners()
+                    Pinterest.removePinterestListeners()
+                }
+            });
+            break;
+        case "ebay":
+            chrome.storage.sync.get(Host_Keys.ebay, (data) => {
+                if (!data[Host_Keys.ebay]) {
+                    console.log("PWLA is not yet registered for " + Hosts.ebay + ": " + JSON.stringify(data, null, 2))
+                    Ebay.registerEbay(window.location.href)
+                } else {
+                    Ebay.removeEbayListeners()
                 }
             });
             break;
@@ -105,6 +113,37 @@ window.onload = () => {
  */
 
 class Utils {
+    // static waitForElm(selector) {
+    //     return new Promise((resolve, reject) => {
+    //         if (document.querySelector(selector)) {
+    //             return resolve(document.querySelector(selector));
+    //         }
+
+    //         let observer;
+    //         let timer;
+    //         const findElement = () => {
+    //             if (document.querySelector(selector)) {
+    //                 resolve(document.querySelector(selector))
+    //                 observer.disconnect()
+    //                 clearInterval(timer)
+    //                 clearTimeout(warningTimeout);
+    //             }
+    //         };
+    //         observer = new MutationObserver(findElement);
+    //         timer = setInterval(findElement, 100)
+    //         const warningTimeout = setTimeout(() => {
+    //             reject("Can't find password element!")
+    //             observer.disconnect()
+    //             clearInterval(timer)
+    //         }, 1000*10);
+            
+            
+    //         observer.observe(document.body, {
+    //             childList: true,
+    //             subtree: true
+    //         });
+    //     });
+    // }
     static waitForElm(selector) {
         return new Promise(resolve => {
             if (document.querySelector(selector)) {

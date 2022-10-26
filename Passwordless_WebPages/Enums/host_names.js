@@ -7,7 +7,8 @@ const Hosts = {
     twitter: "twitter",
     reddit: "reddit",
     microsoft: "live",
-    pinterest: "pinterest"
+    pinterest: "pinterest",
+    ebay: "ebay"
 }
 
 const Host_Keys = {
@@ -19,5 +20,6 @@ const Host_Keys = {
     twitter: "passwordlessAuth.twitter",
     reddit: "passwordlessAuth.reddit",
     live: "passwordlessAuth.microsoft",
-    pinterest: "passwordlessAuth.pinterest"
+    pinterest: "passwordlessAuth.pinterest",
+    ebay: "passwordlessAuth.ebay"
 }

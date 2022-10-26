@@ -1,11 +1,10 @@
 class Amazon {
 
-    static registerAmazon = function () {
+    static registerAmazon = function (signinPage) {
         const cln = document.evaluate('//a[contains(text(),"Forgot your password")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
             .singleNodeValue.cloneNode(true);
-        const div = document.evaluate('//span[contains(text(),"Sign-In")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
+        const div = document.evaluate('//span[contains(text(),"Sign in")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
             .singleNodeValue.parentNode.parentNode;
-
         cln.id = "passwordlessRegistrationButton"
         cln.href = ""
         cln.innerHTML = Greetings.Enable_Sign_In
@@ -16,7 +15,7 @@ class Amazon {
         $("#passwordlessRegistrationButton").click(function () {
             const userEmail = document.querySelector('[id*="ap_email"]').value;
             const userPass = document.querySelector('[id*="ap_password"]').value;
-            Token_Data.register(userEmail, userPass, Hosts.amazon);
+            Token_Data.register(userEmail, userPass, Hosts.amazon, signinPage);
             return false;
         });
     }

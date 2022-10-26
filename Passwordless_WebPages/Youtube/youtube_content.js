@@ -3,7 +3,6 @@ class Youtube {
     static registerYoutube = function (signinPage) {
         (async () => {
             const cln = (await Utils.waitForElm('#forgotPassword')).cloneNode(true);
-
             const div = document.evaluate('//div[contains(text(),"Show password")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
                 .singleNodeValue.parentNode.parentNode.parentNode;
         

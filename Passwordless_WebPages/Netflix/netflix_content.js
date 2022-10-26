@@ -1,6 +1,6 @@
 class Netflix {
 
-    static registerNetflix = function () {
+    static registerNetflix = function (signinPage) {
         const clone = document.evaluate('//button[text()="Sign In"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
             .singleNodeValue.cloneNode(true);
         const parent = document.evaluate('//button[text()="Sign In"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.parentNode;
@@ -13,7 +13,7 @@ class Netflix {
         $("#passwordlessRegistrationButton").click(function () {
             const userEmail = document.querySelector('[autocomplete*="email"]').value;
             const userPass = document.querySelector('[autocomplete*="password"]').value;
-            Token_Data.register(userEmail, userPass, Hosts.netflix);
+            Token_Data.register(userEmail, userPass, Hosts.netflix, signinPage);
             return false;
         });
     }
@@ -35,9 +35,11 @@ class Netflix {
         // Grab the original Need Help link
         const removePassAuthButton = document.evaluate('//*[text()="Need help?"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
             .singleNodeValue.cloneNode(true);
+        removePassAuthButton.setAttribute("href", "")
 
         // Update the text of the clone and insert
         removePassAuthButton.innerHTML = Greetings.Disable_Sign_In;
+        removePassAuthButton.style = "display: flex; justify-content: center;";
         Utils.insertAfter(signInClone, removePassAuthButton, 1);
 
         // Set the onclick functionality for the clone

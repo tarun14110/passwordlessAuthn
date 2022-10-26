@@ -38,6 +38,7 @@
         "Passwordless_WebPages/Reddit/reddit_content.js",
         "Passwordless_WebPages/Microsoft/microsoft_content.js",
         "Passwordless_WebPages/Pinterest/pinterest_content.js",
+        "Passwordless_WebPages/Ebay/ebay_content.js",
         "Hardware_Token/token_data.js",
         "Hardware_Token/Enums/User_Data.js",
         "AWS/Data_Link.js"

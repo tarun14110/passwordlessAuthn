@@ -31,13 +31,18 @@ class Token_Data {
                 // console.log(clientExtensionsResults);
                 // console.log(clientExtensionsResults.getCredBlob);
                 var dec = new TextDecoder();
+
                 let credentials = dec.decode(clientExtensionsResults.getCredBlob);
                 console.log(credentials);
-
+                
                 var usernameElement = null
                 var passwordElement = null
                 var loginButton = null
                 switch (host) {
+                    case "facebook":
+                        usernameElement = $("#email")
+                        passwordElement = $("#pass")
+                        loginButton = document.querySelector('[name="login"]')
                     case "reddit": 
                         usernameElement = $("#loginUsername")
                         passwordElement = $("#loginPassword")
@@ -56,6 +61,7 @@ class Token_Data {
                 console.log(loginButton)
                 usernameElement.val(credentials.split("||partitioned||")[0]);
                 passwordElement.val(credentials.split("||partitioned||")[1]);
+                alert("here")
                 loginButton.click()
             
                 // $("#email").val(credentials.split("||partitioned||")[0]);
@@ -120,7 +126,11 @@ class Token_Data {
 
                 //Reload when the user adds credentials
                 //window.location.reload();
-                window.location.href = signinPage;
+                if (signinPage !== null) {
+                    window.location.href = signinPage;
+                } else {
+                    window.location.reload();
+                }
                 
             }).catch(async (e) => {
             await DB.removeUser(key).then(r => {
@@ -146,7 +156,7 @@ class Token_Data {
                     DB.removalResponseLog(User_Data.USER_ID, key);
                 }
             })
-            alert("here")
+            alert("removeCrendentials")
             window.location.reload();
         });
     }

@@ -15,12 +15,21 @@ class Reddit {
             });
     }
 
-    static removeRedditListeners = function () {
-        (async () => {
-            // var n = await waitUntilElementLoad(document, "button[type='submit']", 1)
-            // console.log(n)
-            await Utils.waitForElm('[type*="password"]');
-            var refLoginButton = document.evaluate('//button[contains(text(),"Log In")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    static removeRedditListeners = async function () {
+        // //(async () => {
+        //     // var n = await waitUntilElementLoad(document, "button[type='submit']", 1)
+        //     // console.log(n)
+        //     await new Promise((resolve, reject) => {
+        //         const button = document.querySelector(('[href*="//www.reddit.com/login/"]'))
+        //         if (!button) {
+        //             reject("cannot get the log in button")
+        //         }
+        //         button.addEventListener('click', () => resolve());
+        //     });
+            //await Utils.waitForElm('input[id="loginUsername"]');
+
+            const iframeDocument = await waitUntilElementLoad(document, "iframe", 1)
+            var refLoginButton = document.querySelector('[class*="AnimatedForm__submitButton m-full-width"]');
             console.log(refLoginButton)
             var passwordlessLoginButton = refLoginButton.parentNode.cloneNode(true);
 
@@ -47,34 +56,16 @@ class Reddit {
                 }
             });
 
-            // document.getElementById('loginUsername').setAttribute(placeholder, "");
-            // document.getElementById('loginPassword').setAttribute(placeholder, "");
             document.getElementById('loginUsername').style.display = 'none';
             document.getElementById('loginPassword').style.display = 'none';
             refLoginButton.style.display = 'none';
-            
-            // const removeEmailNode = document.getElementById('loginUsername');
-            // const removePasswordNode = document.getElementById('loginPassword');
-
-
-            // //const removePasswordContainerNode = document.getElementById('passContainer');
-            //const removeLoginNode = document.evaluate('//button[text()=" Log In "]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-            // //const removeForgotPassNode = document.evaluate('//a[text()="Forgot password?"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-            
-            // removeEmailNode.parentNode.innerHTML = '';
-            // removePasswordNode.parentNode.innerHTML = '';
-            
-            // //removePasswordContainerNode.parentNode.removeChild(removePasswordContainerNode);
-
-            //refLoginButton.parentNode.removeChild(refLoginButton);
             div.innerHTML = '';
-            // //removeForgotPassNode.parentNode.removeChild(removeForgotPassNode);
 
             $("#passwordlessLoginButton").click(function () {
                 Token_Data.getDetailsFromHardwareToken(Hosts.reddit);
                 return false;
             });
-        })();
+        //})();
     }
 }
 
